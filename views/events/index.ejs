@@ -1,0 +1,19 @@
+<% layout('/layouts/boilerplate') %>
+    <h1>EVENTS</h1>
+    <% for (let event of events){%>
+        <div class="card" mb-3>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= event.name %> </h5>
+                        <p class="card-text"><%= event.description %></p>
+                        <p class="card-text">
+                            <small class="text-muted"><%= event.location%></small>
+                        </p>
+                        <a class="btn btn-primary" href="/events/<%=event._id%>">View <%=event.title%></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }%>
+   
