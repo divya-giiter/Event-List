@@ -3,6 +3,7 @@ const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
 const Event = require("../models/event");
 const ExpressError = require("../utils/ExpressError");
+const { isLoggedIn } = require("../middleware");
 
 router.get(
   "/",
@@ -12,12 +13,13 @@ router.get(
   })
 );
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("events/new");
 });
 
 router.post(
   "/",
+  isLoggedIn,
   catchAsync(async (req, res, next) => {
     const event = new Event(req.body.event);
     await event.save();
@@ -35,6 +37,7 @@ router.get(
 
 router.get(
   "/:id/edit",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const event = await Event.findById(req.params.id);
     res.render("events/edit", { event });
@@ -43,6 +46,7 @@ router.get(
 
 router.put(
   "/:id",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const event = await Event.findByIdAndUpdate(id, {
@@ -54,6 +58,7 @@ router.put(
 
 router.delete(
   "/:id",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Event.findByIdAndDelete(id);
