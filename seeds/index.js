@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 const Event = require("../models/event");
-const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_URL || "mongodb://0.0.0.0:27017/Event-List";
 
-//mongodb://0.0.0.0:27017/Event-List
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   // useCreateIndex: true,

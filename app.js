@@ -14,13 +14,12 @@ const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/user");
 const userRoutes = require("./routes/users");
 const eventRoutes = require("./routes/events");
-const MongoDBStore = require("connect-mongo").default;
-const { MongoStore } = require("connect-mongo");
-const dbUrl = process.env.DB_URL;
-//mongodb://0.0.0.0:27017/Event-List
+// const MongoDBStore = require("connect-mongo")(session);
+
+const dbUrl = process.env.DB_URL || "mongodb://0.0.0.0:27017/Event-List";
+
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
-  //useCreateIndex: true,
   useUnifiedTopology: true,
 });
 
@@ -40,14 +39,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-const store = MongoDBStore.create({
-  url: dbUrl,
-  secret: "secret",
-  touchAfter: 24 * 60 * 60,
-});
+const secret = process.env.secret || "secret";
+
+// const store = new MongoDBStore({
+//   url: dbUrl,
+//   secret,
+//   touchAfter: 24 * 60 * 60,
+// });
+
 const sessionConfig = {
   name: "session",
-  secret: "secret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -55,7 +57,10 @@ const sessionConfig = {
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
-  store,
+  // store,
+  //: MongoDBStore.create({
+  //   url: dbUrl,
+  // }),
 };
 app.use(session(sessionConfig));
 
@@ -87,6 +92,8 @@ app.use((err, req, res, next) => {
   res.status(statusCode).send(message);
 });
 
-app.listen(3000, () => {
-  console.log("Serving on port 3000");
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Serving on port ${port}`);
 });
