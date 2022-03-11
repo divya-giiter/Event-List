@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Event = require("../models/event");
+const dbUrl = process.env.DB_URL;
 
-mongoose.connect("mongodb://0.0.0.0:27017/Event-List", {
+//mongodb://0.0.0.0:27017/Event-List
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   // useCreateIndex: true,
   useUnifiedTopology: true,
@@ -16,6 +18,7 @@ db.once("open", () => {
 const seedDB = async () => {
   await Event.deleteMany({});
   const e = new Event({
+    author: "622a4a1eafad8ada6234c72e",
     name: "Divya's First Event",
     email: "singhdivya76999@gmail.com",
     organiser: "Divya",

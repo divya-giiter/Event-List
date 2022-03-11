@@ -3,7 +3,7 @@ const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
 const Event = require("../models/event");
 const ExpressError = require("../utils/ExpressError");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, isAuthor } = require("../middleware");
 
 router.get(
   "/",
@@ -30,7 +30,7 @@ router.post(
 router.get(
   "/:id",
   catchAsync(async (req, res) => {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findById(req.params.id).populate("author");
     res.render("events/show", { event });
   })
 );
@@ -38,6 +38,7 @@ router.get(
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const event = await Event.findById(req.params.id);
     res.render("events/edit", { event });
@@ -47,6 +48,7 @@ router.get(
 router.put(
   "/:id",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const event = await Event.findByIdAndUpdate(id, {
@@ -59,6 +61,7 @@ router.put(
 router.delete(
   "/:id",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Event.findByIdAndDelete(id);
